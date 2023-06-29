@@ -19,5 +19,6 @@ services:
     volumes:
       - ./frontend_Project/node/frontend:/usr/src/app/frontend
     command: sh -c "cd /usr/src/app/frontend && yarn start"
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
+    network_mode: host
