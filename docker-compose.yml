@@ -6,8 +6,8 @@ services:
       context: ./backend
       dockerfile: ./Dockerfile
     volumes:
-      - ./backend:/backend
-    command: python3 /backend/manage.py runserver 0.0.0.0:8000
+      - ./backend:/todoapp
+    command: python3 /todoapp/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     tty: true
