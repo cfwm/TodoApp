@@ -8,5 +8,5 @@ docker-compose build
 docker-compose run backend sh
 python manage.py migrate
 exit
-docker compose up
+docker-compose up
 ``` 
