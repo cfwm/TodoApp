@@ -9,6 +9,7 @@ import {
   FormGroup,
   Input,
   Label,
+  List,
 } from "reactstrap";
 
 export default class CustomModal extends Component {
@@ -16,6 +17,7 @@ export default class CustomModal extends Component {
     super(props);
     this.state = {
       activeItem: this.props.activeItem,
+      mode: this.props.mode,
     };
   }
 
@@ -32,33 +34,51 @@ export default class CustomModal extends Component {
   };
 
   render() {
-    const { toggle, onSave } = this.props;
+    const { mode, toggle, onSave } = this.props;
 
-    return (
-      <Modal isOpen={true} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Todo Item</ModalHeader>
-        <ModalBody>
-          <Form>
+    const modalTitle = () => {
+      switch(mode) {
+        case "create":
+          return "Criar";
+        case "edit":
+          return `Editar: ${this.state.activeItem.title}`;
+        default:
+          return `Detalhes: ${this.state.activeItem.title}`;
+        
+      }
+    }
+
+    const saveButton = () => {
+      return  <Button
+          color="success"
+          onClick={() => onSave(this.state.activeItem)}
+        >
+          Salvar
+        </Button>
+    }
+
+    const formItem = () => {
+      return <Form>
             <FormGroup>
-              <Label for="todo-title">Title</Label>
+              <Label for="todo-title">Título</Label>
               <Input
                 type="text"
                 id="todo-title"
                 name="title"
                 value={this.state.activeItem.title}
                 onChange={this.handleChange}
-                placeholder="Enter Todo Title"
+                placeholder="Escreva o título"
               />
             </FormGroup>
             <FormGroup>
-              <Label for="todo-description">Description</Label>
+              <Label for="todo-description">Descrição</Label>
               <Input
                 type="text"
                 id="todo-description"
                 name="description"
                 value={this.state.activeItem.description}
                 onChange={this.handleChange}
-                placeholder="Enter Todo description"
+                placeholder="Escreva a descrição"
               />
             </FormGroup>
             <FormGroup check>
@@ -69,18 +89,36 @@ export default class CustomModal extends Component {
                   checked={this.state.activeItem.completed}
                   onChange={this.handleChange}
                 />
-                Completed
+                  Completa
               </Label>
             </FormGroup>
           </Form>
+    }
+
+    const listItem = () => {
+      return <List type="unstyled">
+        <li>
+          Título: <b>{ this.state.activeItem.title }</b>
+        </li>
+        <li>
+          Descrição: <b>{ this.state.activeItem.description }</b>
+        </li>
+        <li>
+          Completa: <b>{ this.state.activeItem.completed ? "Sim" : "Não" }</b>
+        </li>
+      </List>
+    }
+    
+    return (
+      <Modal isOpen={true} toggle={toggle}>
+        <ModalHeader toggle={toggle}>{ modalTitle() }</ModalHeader>
+
+        <ModalBody>
+          { mode === 'see' ? listItem() : formItem() }
         </ModalBody>
+
         <ModalFooter>
-          <Button
-            color="success"
-            onClick={() => onSave(this.state.activeItem)}
-          >
-            Save
-          </Button>
+          { ["create", "edit"].some(item => item === mode) && saveButton() }
         </ModalFooter>
       </Modal>
     );

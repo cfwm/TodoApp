@@ -9,6 +9,8 @@ class App extends Component {
       viewCompleted: false,
       todoList: [],
       modal: false,
+      modes: ['create', 'edit', 'see'],
+      mode: null,
       activeItem: {
         title: "",
         description: "",
@@ -30,6 +32,7 @@ class App extends Component {
 
   toggle = () => {
     this.setState({ modal: !this.state.modal });
+    this.mode = null;
   };
 
   handleSubmit = (item) => {
@@ -55,11 +58,15 @@ class App extends Component {
   createItem = () => {
     const item = { title: "", description: "", completed: false };
 
-    this.setState({ activeItem: item, modal: !this.state.modal });
+    this.setState({ mode: this.state.modes[0], activeItem: item, modal: !this.state.modal });
   };
 
   editItem = (item) => {
-    this.setState({ activeItem: item, modal: !this.state.modal });
+    this.setState({ mode: this.state.modes[1], activeItem: item, modal: !this.state.modal });
+  };
+
+  seeItem = (item) => {
+    this.setState({ mode: this.state.modes[2], activeItem: item, modal: !this.state.modal });
   };
 
   displayCompleted = (status) => {
@@ -77,13 +84,13 @@ class App extends Component {
           onClick={() => this.displayCompleted(true)}
           className={this.state.viewCompleted ? "nav-link active" : "nav-link"}
         >
-          Complete
+          Completa
         </span>
         <span
           onClick={() => this.displayCompleted(false)}
           className={this.state.viewCompleted ? "nav-link" : "nav-link active"}
         >
-          Incomplete
+          Pendente
         </span>
       </div>
     );
@@ -111,15 +118,21 @@ class App extends Component {
         <span>
           <button
             className="btn btn-secondary mr-2"
+            onClick={() => this.seeItem(item)}
+          >
+            Ver
+          </button>
+          <button
+            className="btn btn-secondary mr-2"
             onClick={() => this.editItem(item)}
           >
-            Edit
+            Editar
           </button>
           <button
             className="btn btn-danger"
             onClick={() => this.handleDelete(item)}
           >
-            Delete
+            Excluir
           </button>
         </span>
       </li>
@@ -138,7 +151,7 @@ class App extends Component {
                   className="btn btn-primary"
                   onClick={this.createItem}
                 >
-                  Add task
+                  Criar tarefa
                 </button>
               </div>
               {this.renderTabList()}
@@ -151,6 +164,7 @@ class App extends Component {
         {this.state.modal ? (
           <Modal
             activeItem={this.state.activeItem}
+            mode={this.state.mode}
             toggle={this.toggle}
             onSave={this.handleSubmit}
           />
